@@ -10,6 +10,7 @@ PING_COUNT=4
 LOG_ENABLED=false
 USE_EMOJI=true
 USE_COLOR=true
+VERBOSE=false
 
 # Emoji-safe fallback
 TICK="✅"
@@ -92,6 +93,10 @@ for arg in "$@"; do
       PING_COUNT="$2"
       shift 2
       ;;
+    --verbose|-v)
+      VERBOSE=true
+      shift
+      ;;
   esac
 done
 
@@ -109,11 +114,17 @@ success_count=0
 for ((i=1; i<=PING_COUNT; i++)); do
   # Send a single ping with a 1-second timeout
   if ping_output=$(ping -c 1 -W 1 "$HOST" 2>&1); then
+    if [[ "$VERBOSE" == true ]]; then
+      echo "$ping_output"
+    fi
     # Extract time from successful ping
     rtt=$(echo "$ping_output" | grep -o 'time=[0-9.]*' | cut -d'=' -f2)
     echo -e "${GREEN}${TICK} Reply from $HOST: seq=$i time=${rtt} ms${NC}"
     ((success_count++))
   else
+    if [[ "$VERBOSE" == true ]]; then
+      echo "$ping_output"
+    fi
     echo -e "${RED}${CROSS} No reply from $HOST: seq=$i timeout${NC}"
   fi
   # Optional: sleep for a short duration
