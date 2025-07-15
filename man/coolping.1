@@ -1,0 +1,30 @@
+.TH COOLPING 1 "June 2024" "CoolPing 1.0" "User Commands"
+.SH NAME
+coolping \- a stylish, user-friendly alternative to the classic ping command
+.SH SYNOPSIS
+.B coolping
+[\fIOPTIONS\fR] \fIhost\fR
+.SH DESCRIPTION
+CoolPing provides emoji-based feedback, colorized output, and convenient logging, making network diagnostics more fun and informative.
+.SH OPTIONS
+.TP
+.B --count N
+Number of packets to send (default: 4)
+.TP
+.B --log
+Enable logging to ~/coolping.log
+.TP
+.B --no-emoji
+Disable emojis
+.TP
+.B --color never
+Disable colored output
+.TP
+.B --help, -h
+Show help message
+.SH EXAMPLES
+.B coolping --count 10 google.com
+.SH AUTHOR
+Edris Ranjbar
+.SH SEE ALSO
+ping(8) 

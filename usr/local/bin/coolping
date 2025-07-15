@@ -62,7 +62,7 @@ show_help() {
 # Parse arguments
 for arg in "$@"; do
   case $arg in
-    --help)
+    --help|-h)
       show_help
       exit 0
       ;;
@@ -111,6 +111,60 @@ fi
 echo -e "${YELLOW}${INFO} Pinging $HOST with $PING_COUNT packets...${NC}"
 
 success_count=0
+# Fun message arrays
+FAIL_QUOTES=(
+  "Oops! Did the internet ghost us again? 👻"
+  "Nope, nada, zilch. Where did those packets go? 📦"
+  "Still waiting... Still nothing... Typical. 😑"
+  "Imagine paying for internet and this happens. 🙄"
+  "Is your Wi-Fi just a suggestion, not a fact? 📶"
+)
+
+SUCCESS_QUOTES=(
+  "All packets home safe and sound! 🚀"
+  "Ping complete. Internet still loves you. ❤️"
+  "Boom! $HOST answered like a champ. 🏆"
+  "Solid connection! Your router approves. ✅"
+  "The tubes of the internet are unclogged. 🪠"
+)
+
+EASTER_EGGS=(
+  "It's not a bug, it's a feature! 🐞"
+  "Have you tried turning it off and on again? 🔄"
+  "99 little bugs in the code, 99 bugs in the code... 🐛"
+  "To err is human, to debug divine. 👨‍💻"
+  "There is no cloud, just someone else's computer. ☁️"
+  "Works on my machine! 🤷"
+  "rm -rf / --no-preserve-root (just kidding, don't!) 💣"
+  "I see dead packets... 👻"
+  "It's always DNS. Always. 🧙"
+  "Segmentation fault (core dumped) 💥"
+)
+
+# Function to get a random fail quote
+random_fail_quote() {
+  echo "${FAIL_QUOTES[$RANDOM % ${#FAIL_QUOTES[@]}]}"
+}
+
+# Function to get a random success quote
+random_success_quote() {
+  echo "${SUCCESS_QUOTES[$RANDOM % ${#SUCCESS_QUOTES[@]}]}"
+}
+
+# Function to get a random easter egg
+random_easter_egg() {
+  echo "${EASTER_EGGS[$RANDOM % ${#EASTER_EGGS[@]}]}"
+}
+
+# Function to decide if we show an easter egg (10% chance)
+maybe_easter_egg() {
+  if (( RANDOM % 10 == 0 )); then
+    random_easter_egg
+  else
+    echo ""
+  fi
+}
+
 for ((i=1; i<=PING_COUNT; i++)); do
   # Send a single ping with a 1-second timeout
   if ping_output=$(ping -c 1 -W 1 "$HOST" 2>&1); then
@@ -132,14 +186,27 @@ for ((i=1; i<=PING_COUNT; i++)); do
 done
 
 # Show final summary and helpful tips if all pings failed
+# Only show one fun message (success, failure, or easter egg) after all packets
 if [[ $success_count -eq 0 ]]; then
-  echo "" # Newline for spacing
-  echo -e "${RED}Oh no! The packets seem to be lost in the digital void... 🚀${NC}"
-  echo -e "${YELLOW}Here are a few things you can try to fix it:${NC}"
+  egg="$(maybe_easter_egg)"
+  if [[ -n "$egg" ]]; then
+    echo -e "\n${RED}$egg${NC}\n"
+  else
+    echo -e "\n${RED}$(random_fail_quote)${NC}\n"
+  fi
+  echo -e "${YELLOW}🛠️  How to fix this mess?${NC}"
   echo "  1. Check your Wi-Fi or network cable."
   echo "  2. Restart your router (the classic 'turn it off and on again')."
   echo "  3. Verify your DNS settings (try 8.8.8.8 or 1.1.1.1)."
   echo "  4. Use 'traceroute $HOST' or 'mtr $HOST' to see where the connection drops."
+  echo
+elif [[ $success_count -eq $PING_COUNT ]]; then
+  egg="$(maybe_easter_egg)"
+  if [[ -n "$egg" ]]; then
+    echo -e "\n${GREEN}$egg${NC}\n"
+  else
+    echo -e "\n${GREEN}$(random_success_quote)${NC}\n"
+  fi
 fi
 
 # Log if needed

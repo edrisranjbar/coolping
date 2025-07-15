@@ -50,6 +50,16 @@ coolping [OPTIONS] <host>
 coolping --count 10 google.com
 ```
 
+## 📖 Manual Page
+
+After installation, you can view the full manual with:
+
+```bash
+man coolping
+```
+
+This provides detailed usage, options, and examples for CoolPing.
+
 ## 📄 Logging
 
 All ping results are automatically logged to `~/coolping.log`. You can review your ping history at any time.
