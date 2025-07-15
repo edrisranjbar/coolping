@@ -16,9 +16,14 @@ CoolPing is a stylish, user-friendly alternative to the classic `ping` command. 
 ### Debian/Ubuntu
 
 ```bash
-git clone https://github.com/yourusername/coolping.git
-cd coolping
-dpkg-deb --build .
+# The .deb file is already included in this directory—no build needed!
+sudo dpkg -i coolping.deb
+```
+
+#### Or install directly from GitHub (no git required)
+
+```bash
+wget https://github.com/edrisranjbar/coolping/raw/main/coolping.deb -O coolping.deb
 sudo dpkg -i coolping.deb
 ```
 
