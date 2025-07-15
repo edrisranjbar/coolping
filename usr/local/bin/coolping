@@ -1,0 +1,124 @@
+#!/bin/bash
+
+# ============================
+# 🛰️ CoolPing by Edris Ranjbar
+# A friendly ping with emoji
+# ============================
+
+# Defaults
+PING_COUNT=4
+LOG_ENABLED=false
+USE_EMOJI=true
+USE_COLOR=true
+
+# Emoji-safe fallback
+TICK="✅"
+CROSS="❌"
+INFO="ℹ️"
+WARN="⚠️"
+
+# Fallback for terminals with no emoji
+if [[ "$TERM" == "dumb" ]] || [[ "$1" == "--no-emoji" ]]; then
+  USE_EMOJI=false
+  TICK="[OK]"
+  CROSS="[FAIL]"
+  INFO="[INFO]"
+  WARN="[WARN]"
+fi
+
+# ANSI Colors
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+BLUE='\033[0;36m'
+YELLOW='\033[1;33m'
+NC='\033[0m' # No Color
+
+# Disable color if requested
+if [[ "$*" == *"--color never"* ]]; then
+  USE_COLOR=false
+  RED=''
+  GREEN=''
+  BLUE=''
+  YELLOW=''
+  NC=''
+fi
+
+# Print usage
+show_help() {
+  echo -e "${BLUE}CoolPing - A stylish ping command with emoji feedback 🌐${NC}"
+  echo ""
+  echo "Usage:"
+  echo "  coolping <host> [options]"
+  echo ""
+  echo "Options:"
+  echo "  --count N       Number of packets to send (default: 4)"
+  echo "  --log           Enable logging to ~/coolping.log"
+  echo "  --no-emoji      Disable emojis"
+  echo "  --color never   Disable colored output"
+  echo "  --help          Show this help message"
+}
+
+# Parse arguments
+for arg in "$@"; do
+  case $arg in
+    --help)
+      show_help
+      exit 0
+      ;;
+    --log)
+      LOG_ENABLED=true
+      shift
+      ;;
+    --no-emoji)
+      USE_EMOJI=false
+      TICK="[OK]"
+      CROSS="[FAIL]"
+      INFO="[INFO]"
+      WARN="[WARN]"
+      shift
+      ;;
+    --color)
+      if [[ "$2" == "never" ]]; then
+        USE_COLOR=false
+        RED=''
+        GREEN=''
+        BLUE=''
+        YELLOW=''
+        NC=''
+      fi
+      shift 2
+      ;;
+    --count)
+      PING_COUNT="$2"
+      shift 2
+      ;;
+  esac
+done
+
+# Target host
+HOST="$1"
+if [[ -z "$HOST" ]] || [[ "$HOST" == --* ]]; then
+  echo -e "${RED}${WARN} No host provided. Run with --help for usage.${NC}"
+  exit 1
+fi
+
+# Run ping
+echo -e "${YELLOW}${INFO} Pinging $HOST with $PING_COUNT packets...${NC}"
+PING_RESULT=$(ping -c "$PING_COUNT" "$HOST" 2>&1)
+PING_EXIT_CODE=$?
+
+# Print output
+echo "$PING_RESULT"
+
+# Show result
+if [[ $PING_EXIT_CODE -eq 0 ]]; then
+  echo -e "${GREEN}${TICK} Ping to $HOST successful!${NC}"
+else
+  echo -e "${RED}${CROSS} Ping to $HOST failed.${NC}"
+fi
+
+# Log if needed
+if [[ "$LOG_ENABLED" = true ]]; then
+  echo "$(date '+%Y-%m-%d %H:%M:%S') - coolping $HOST --count $PING_COUNT - exit $PING_EXIT_CODE" >> ~/coolping.log
+  echo -e "${BLUE}${INFO} Logged to ~/coolping.log${NC}"
+fi

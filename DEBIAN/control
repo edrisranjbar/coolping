@@ -1,0 +1,9 @@
+Package: coolping
+Version: 1.0.0
+Section: utils
+Priority: optional
+Architecture: all
+Depends: bash, coreutils, iputils-ping
+Maintainer: Edris Ranjbar <edrisranjbar.dev@gmail.com>
+Description: 🛰️ CoolPing - Stylish terminal ping with emojis, logging, and flags.
+ A lightweight, cool terminal ping tool with emoji feedback, logging, and customization.
