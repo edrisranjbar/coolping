@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>CoolPing 🛰️</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #2d6cdf;
+      --accent: #f5f7fa;
+      --text: #222;
+      --card: #fff;
+      --border: #e5e7eb;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --primary: #6ea8ff;
+        --accent: #181c24;
+        --text: #f3f6fa;
+        --card: #232a36;
+        --border: #2d3646;
+      }
+    }
+    * { box-sizing: border-box; }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--accent);
+      color: var(--text);
+      margin: 0;
+      padding: 0;
+    }
+    .container {
+      max-width: 700px;
+      margin: 0 auto;
+      padding: 32px 16px 48px 16px;
+    }
+    .hero {
+      text-align: center;
+      margin-bottom: 2.5rem;
+    }
+    .hero-emoji {
+      font-size: 3.5rem;
+      margin-bottom: 0.5rem;
+    }
+    h1 {
+      font-size: 2.5rem;
+      font-weight: 600;
+      margin: 0 0 0.5rem 0;
+      color: var(--primary);
+    }
+    .tagline {
+      font-size: 1.2rem;
+      color: #444;
+      margin-bottom: 1.5rem;
+    }
+    @media (prefers-color-scheme: dark) {
+      .tagline {
+        color: #bfc8d6;
+      }
+    }
+    .cta {
+      display: inline-block;
+      background: var(--primary);
+      color: #fff;
+      padding: 0.7em 1.5em;
+      border-radius: 6px;
+      font-weight: 600;
+      text-decoration: none;
+      margin-bottom: 1.5rem;
+      transition: background 0.2s;
+    }
+    .cta:hover {
+      background: #174ea6;
+    }
+    @media (prefers-color-scheme: dark) {
+      .cta {
+        background: #3a7be0;
+        color: #fff;
+      }
+      .cta:hover {
+        background: #2556a6;
+      }
+    }
+    .features {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.2rem;
+      margin: 2.5rem 0 2rem 0;
+    }
+    .feature-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1.2rem 1rem 1rem 1rem;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      min-height: 110px;
+      box-shadow: 0 2px 8px 0 rgba(44, 62, 80, 0.04);
+    }
+    .feature-emoji {
+      font-size: 1.5rem;
+      margin-bottom: 0.5rem;
+    }
+    .feature-title {
+      font-weight: 600;
+      margin-bottom: 0.2rem;
+    }
+    pre, code {
+      background: #f2f2f2;
+      border-radius: 5px;
+      font-size: 1em;
+      padding: 0.2em 0.5em;
+      font-family: 'Fira Mono', 'Consolas', monospace;
+    }
+    pre {
+      padding: 1em;
+      overflow-x: auto;
+      margin: 1.2em 0;
+    }
+    @media (prefers-color-scheme: dark) {
+      pre, code {
+        background: #232a36;
+        color: #e3eaf7;
+      }
+    }
+    h2 {
+      font-size: 1.3rem;
+      margin-top: 2.5rem;
+      color: var(--primary);
+    }
+    ul {
+      padding-left: 1.2em;
+    }
+    @media (max-width: 700px) {
+      .container { padding: 20px 4vw 40px 4vw; }
+      .features { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="hero">
+      <div class="hero-emoji">🛰️</div>
+      <h1>CoolPing</h1>
+      <div class="tagline">A stylish, emoji-powered alternative to <code>ping</code>.<br>Network diagnostics, now with personality!</div>
+      <a class="cta" href="https://github.com/edrisranjbar/coolping" target="_blank">View on GitHub</a>
+    </div>
+
+    <div class="features">
+      <div class="feature-card">
+        <div class="feature-emoji">✅❌</div>
+        <div class="feature-title">Emoji Feedback</div>
+        Instantly see success or failure for each ping.
+      </div>
+      <div class="feature-card">
+        <div class="feature-emoji">🌈</div>
+        <div class="feature-title">Color Output</div>
+        Colorful terminal output for easy reading (toggle with <code>--color</code>).
+      </div>
+      <div class="feature-card">
+        <div class="feature-emoji">📝</div>
+        <div class="feature-title">Logging</div>
+        All results are saved to <code>~/coolping.log</code> for later review.
+      </div>
+      <div class="feature-card">
+        <div class="feature-emoji">⚙️</div>
+        <div class="feature-title">Customizable</div>
+        Simple CLI with options for emoji, color, and packet count.
+      </div>
+    </div>
+
+    <h2>🚀 Installation</h2>
+    <p><b>Debian/Ubuntu:</b></p>
+    <pre><code>wget https://github.com/edrisranjbar/coolping/raw/main/coolping.deb -O coolping.deb
+sudo dpkg -i coolping.deb</code></pre>
+    <p><b>Manual:</b> Copy the <code>coolping</code> binary from <code>usr/local/bin/</code> to a directory in your <code>$PATH</code>.</p>
+
+    <h2>🛠️ Usage</h2>
+    <pre><code>coolping [OPTIONS] &lt;host&gt;</code></pre>
+    <ul>
+      <li><code>--count N</code>  Number of packets to send (default: 4)</li>
+      <li><code>--color never</code> Disable color output</li>
+      <li><code>--no-emoji</code>  Disable emoji feedback</li>
+      <li><code>--help</code>    Show help message</li>
+    </ul>
+    <p><b>Example:</b></p>
+    <pre><code>coolping --count 10 google.com</code></pre>
+
+    <h2>📄 Logging</h2>
+    <p>All ping results are automatically logged to <code>~/coolping.log</code>. Review your ping history at any time.</p>
+
+    <h2>🤝 Contributing</h2>
+    <p>Contributions are welcome! Please open issues or pull requests on <a href="https://github.com/edrisranjbar/coolping" target="_blank">GitHub</a>.</p>
+
+    <h2>📜 License</h2>
+    <p>This project is licensed under the MIT License.</p>
+  </div>
+</body>
+</html>
