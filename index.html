@@ -8,18 +8,26 @@
   <style>
     :root {
       --primary: #2d6cdf;
+      --primary-dark: #174ea6;
       --accent: #f5f7fa;
       --text: #222;
       --card: #fff;
       --border: #e5e7eb;
+      --footer-bg: #f2f4f8;
+      --icon: #6ea8ff;
+      --shadow: 0 4px 24px 0 rgba(44, 62, 80, 0.08);
     }
     @media (prefers-color-scheme: dark) {
       :root {
         --primary: #6ea8ff;
+        --primary-dark: #2556a6;
         --accent: #181c24;
         --text: #f3f6fa;
         --card: #232a36;
         --border: #2d3646;
+        --footer-bg: #181c24;
+        --icon: #6ea8ff;
+        --shadow: 0 4px 24px 0 rgba(44, 62, 80, 0.18);
       }
     }
     * { box-sizing: border-box; }
@@ -29,6 +37,9 @@
       color: var(--text);
       margin: 0;
       padding: 0;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
     }
     .container {
       max-width: 700px;
@@ -38,164 +49,365 @@
     .hero {
       text-align: center;
       margin-bottom: 2.5rem;
+      padding-top: 2.5rem;
+      animation: fadeIn 1.2s cubic-bezier(.4,2,.6,1);
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: none; }
     }
     .hero-emoji {
-      font-size: 3.5rem;
+      font-size: 4rem;
       margin-bottom: 0.5rem;
+      animation: popIn 1.2s cubic-bezier(.4,2,.6,1);
+    }
+    @keyframes popIn {
+      0% { transform: scale(0.7); opacity: 0; }
+      60% { transform: scale(1.15); opacity: 1; }
+      100% { transform: scale(1); }
     }
     h1 {
-      font-size: 2.5rem;
-      font-weight: 600;
+      font-size: 2.8rem;
+      font-weight: 700;
       margin: 0 0 0.5rem 0;
       color: var(--primary);
+      letter-spacing: -1px;
     }
     .tagline {
-      font-size: 1.2rem;
+      font-size: 1.25rem;
       color: #444;
-      margin-bottom: 1.5rem;
+      margin-bottom: 2.2rem;
+      font-weight: 500;
+      letter-spacing: 0.01em;
     }
     @media (prefers-color-scheme: dark) {
-      .tagline {
-        color: #bfc8d6;
-      }
+      .tagline { color: #bfc8d6; }
     }
-    .cta {
-      display: inline-block;
-      background: var(--primary);
+    .hero-btns {
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      flex-wrap: wrap;
+      margin-bottom: 1.5rem;
+    }
+    .cta, .download-btn, .github-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(90deg, var(--primary) 60%, var(--primary-dark) 100%);
       color: #fff;
-      padding: 0.7em 1.5em;
-      border-radius: 6px;
+      padding: 0.95em 2.2em;
+      border-radius: 999px;
       font-weight: 600;
+      font-size: 1.12rem;
       text-decoration: none;
-      margin-bottom: 1.5rem;
-      transition: background 0.2s;
+      box-shadow: var(--shadow);
+      border: none;
+      outline: none;
+      cursor: pointer;
+      transition: transform 0.13s cubic-bezier(.4,2,.6,1), box-shadow 0.13s, background 0.2s;
+      margin: 0.2em 0.2em 0.2em 0.2em;
+      gap: 0.6em;
     }
-    .cta:hover {
-      background: #174ea6;
+    .cta:hover, .download-btn:hover, .github-btn:hover,
+    .cta:focus, .download-btn:focus, .github-btn:focus {
+      transform: scale(1.045);
+      box-shadow: 0 6px 24px 0 rgba(44, 62, 80, 0.16);
+      background: linear-gradient(90deg, var(--primary-dark) 60%, var(--primary) 100%);
+    }
+    .download-btn {
+      background: linear-gradient(90deg, #1db954 60%, #21e07b 100%);
+      color: #fff;
+    }
+    .download-btn:hover, .download-btn:focus {
+      background: linear-gradient(90deg, #168f3e 60%, #21e07b 100%);
     }
     @media (prefers-color-scheme: dark) {
-      .cta {
-        background: #3a7be0;
+      .download-btn {
+        background: linear-gradient(90deg, #21e07b 60%, #1db954 100%);
+        color: #181c24;
+      }
+      .download-btn:hover, .download-btn:focus {
+        background: linear-gradient(90deg, #1db954 60%, #21e07b 100%);
         color: #fff;
       }
-      .cta:hover {
-        background: #2556a6;
-      }
     }
-    .features {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 1.2rem;
-      margin: 2.5rem 0 2rem 0;
+    .github-btn {
+      background: linear-gradient(90deg, #24292f 60%, #444950 100%);
+      color: #fff;
     }
-    .feature-card {
+    .github-btn svg {
+      margin-right: 0.5em;
+      width: 1.3em;
+      height: 1.3em;
+      fill: #fff;
+      vertical-align: middle;
+    }
+    .section {
+      margin: 3.5rem 0 2.5rem 0;
+      padding: 0;
+      position: relative;
+    }
+    .section-sep {
+      width: 100%;
+      height: 1px;
+      background: linear-gradient(90deg, var(--border) 0%, var(--primary) 100%);
+      opacity: 0.13;
+      margin: 3.5rem 0 2.5rem 0;
+      border: none;
+    }
+    .install-section {
       background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 1.2rem 1rem 1rem 1rem;
+      border-radius: 18px;
+      box-shadow: var(--shadow);
+      padding: 2.5rem 1.7rem 2.2rem 1.7rem;
+      margin: 0 auto 2.5rem auto;
+      max-width: 600px;
+      animation: fadeIn 1.2s cubic-bezier(.4,2,.6,1);
+      border: 1.5px solid var(--primary);
+      position: relative;
+      overflow: hidden;
+    }
+    .install-section::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0; height: 7px;
+      background: linear-gradient(90deg, var(--primary) 0%, var(--primary-dark) 100%);
+      border-radius: 18px 18px 0 0;
+      opacity: 0.18;
+    }
+    .install-icon {
+      font-size: 2.2rem;
+      color: var(--primary);
+      margin-bottom: 0.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+    }
+    .install-section h2 {
+      margin-top: 0;
+      color: var(--primary);
+      font-size: 1.45rem;
+      font-weight: 800;
+      letter-spacing: 0.01em;
+      text-align: center;
+      margin-bottom: 0.7em;
+    }
+    .install-cmds {
+      margin: 1.2em 0 0.5em 0;
       display: flex;
       flex-direction: column;
-      align-items: flex-start;
-      min-height: 110px;
+      gap: 1.2em;
+    }
+    .install-block {
+      background: #f7fafd;
+      border-radius: 10px;
+      padding: 1.1em 1em 0.7em 1em;
       box-shadow: 0 2px 8px 0 rgba(44, 62, 80, 0.04);
+      border: 1px solid var(--border);
+      margin-bottom: 0.2em;
+      transition: background 0.2s;
     }
-    .feature-emoji {
-      font-size: 1.5rem;
-      margin-bottom: 0.5rem;
+    @media (prefers-color-scheme: dark) {
+      .install-block {
+        background: #232a36;
+        border: 1px solid #2d3646;
+      }
     }
-    .feature-title {
+    .install-block b {
+      color: var(--primary);
+      font-weight: 700;
+      font-size: 1.08em;
+      display: block;
+      margin-bottom: 0.3em;
+    }
+    .website-link {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 2.2rem auto 0 auto;
+      max-width: 340px;
+      background: linear-gradient(90deg, var(--primary) 60%, var(--primary-dark) 100%);
+      color: #fff;
       font-weight: 600;
-      margin-bottom: 0.2rem;
+      font-size: 1.13rem;
+      border-radius: 999px;
+      padding: 0.9em 2.1em;
+      text-decoration: none;
+      box-shadow: var(--shadow);
+      transition: background 0.18s, transform 0.13s cubic-bezier(.4,2,.6,1);
+      gap: 0.7em;
+    }
+    .website-link:hover, .website-link:focus {
+      background: linear-gradient(90deg, var(--primary-dark) 60%, var(--primary) 100%);
+      transform: scale(1.045);
     }
     pre, code {
       background: #f2f2f2;
-      border-radius: 5px;
-      font-size: 1em;
+      border-radius: 7px;
+      font-size: 1.04em;
       padding: 0.2em 0.5em;
       font-family: 'Fira Mono', 'Consolas', monospace;
+      transition: background 0.2s;
     }
     pre {
-      padding: 1em;
+      padding: 1.1em 1em;
       overflow-x: auto;
-      margin: 1.2em 0;
+      margin: 1.2em 0 0.5em 0;
+      font-size: 1.04em;
+      background: #f2f2f2;
+      border-radius: 7px;
+      box-shadow: 0 2px 8px 0 rgba(44, 62, 80, 0.04);
+      transition: background 0.2s;
     }
     @media (prefers-color-scheme: dark) {
       pre, code {
         background: #232a36;
         color: #e3eaf7;
       }
+      .install-section {
+        background: #232a36;
+      }
     }
-    h2 {
-      font-size: 1.3rem;
-      margin-top: 2.5rem;
+    .footer {
+      width: 100%;
+      background: var(--footer-bg);
+      color: var(--text);
+      padding: 2.2rem 0 1.2rem 0;
+      text-align: center;
+      font-size: 1.05rem;
+      margin-top: auto;
+      border-top: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.7em;
+    }
+    .footer-socials {
+      display: flex;
+      gap: 1.1em;
+      justify-content: center;
+      margin: 0.5em 0 0.2em 0;
+    }
+    .footer-socials a {
+      color: var(--icon);
+      text-decoration: none;
+      font-size: 1.5em;
+      transition: color 0.18s;
+    }
+    .footer-socials a:hover {
       color: var(--primary);
     }
-    ul {
-      padding-left: 1.2em;
+    .footer-github {
+      color: var(--primary);
+      text-decoration: none;
+      font-weight: 600;
+      margin-left: 0.5em;
     }
     @media (max-width: 700px) {
       .container { padding: 20px 4vw 40px 4vw; }
       .features { grid-template-columns: 1fr; }
+      .install-section { padding: 1.2rem 0.7rem 1.2rem 0.7rem; }
+      .video-section iframe { max-width: 100vw; }
+    }
+    /* Terminal style for install box */
+    .terminal-block {
+      background: #181c24;
+      color: #e3eaf7;
+      border-radius: 12px;
+      box-shadow: 0 4px 24px 0 rgba(44, 62, 80, 0.13);
+      border: 1.5px solid #232a36;
+      padding: 1.3em 1.1em 1.1em 1.1em;
+      font-family: 'Fira Mono', 'Consolas', monospace;
+      margin-bottom: 0.2em;
+      position: relative;
+      overflow-x: auto;
+      margin-top: 0.7em;
+      transition: background 0.2s;
+    }
+    .terminal-title {
+      position: absolute;
+      top: 0.7em;
+      left: 1.2em;
+      font-size: 0.98em;
+      color: #6ea8ff;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      opacity: 0.85;
+    }
+    .terminal-block pre {
+      background: transparent;
+      color: inherit;
+      box-shadow: none;
+      padding: 0.7em 0 0.2em 0;
+      margin: 0;
+      font-size: 1.08em;
+    }
+    .terminal-block code {
+      background: transparent;
+      color: inherit;
+      padding: 0;
+      font-size: inherit;
+    }
+    .prompt {
+      color: #6ea8ff;
+      font-weight: bold;
+    }
+    .terminal-comment {
+      color: #8bb7f0;
+      font-size: 0.98em;
+      margin-left: 0.1em;
+      display: block;
+      margin-top: 0.7em;
+      margin-bottom: 0.2em;
+    }
+    .terminal-sep {
+      display: block;
+      height: 1px;
+      background: linear-gradient(90deg, #232a36 0%, #6ea8ff 100%);
+      opacity: 0.18;
+      margin: 0.7em 0 0.7em 0;
     }
   </style>
 </head>
 <body>
   <div class="container">
-    <div class="hero">
+    <section class="hero">
       <div class="hero-emoji">🛰️</div>
       <h1>CoolPing</h1>
-      <div class="tagline">A stylish, emoji-powered alternative to <code>ping</code>.<br>Network diagnostics, now with personality!</div>
-      <a class="cta" href="https://github.com/edrisranjbar/coolping" target="_blank">View on GitHub</a>
-    </div>
-
-    <div class="features">
-      <div class="feature-card">
-        <div class="feature-emoji">✅❌</div>
-        <div class="feature-title">Emoji Feedback</div>
-        Instantly see success or failure for each ping.
+      <div class="tagline">A fun, modern alternative to <code>ping</code>.<br>Network diagnostics, now with personality!</div>
+      <div class="hero-btns">
+        <a class="download-btn" href="https://github.com/edrisranjbar/coolping/raw/main/coolping.deb" download>⬇️ Download .deb</a>
+        <a class="github-btn" href="https://github.com/edrisranjbar/coolping" target="_blank">
+          <svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M8 0.198242C3.58 0.198242 0 3.77824 0 8.19824C0 11.6382 2.29 14.3982 5.47 15.3982C5.87 15.4682 6.02 15.2382 6.02 15.0382C6.02 14.8582 6.01 14.2982 6.01 13.5982C4 13.9982 3.48 12.8982 3.48 12.8982C3.13 12.0482 2.63 11.8182 2.63 11.8182C1.89 11.3182 2.69 11.3282 2.69 11.3282C3.5 11.3882 3.92 12.1682 3.92 12.1682C4.64 13.3882 5.78 13.0482 6.22 12.8482C6.29 12.3582 6.48 12.0482 6.7 11.8582C4.87 11.6682 2.97 10.9582 2.97 7.99824C2.97 7.11824 3.29 6.39824 3.82 5.81824C3.74 5.62824 3.46 4.74824 3.9 3.59824C3.9 3.59824 4.59 3.38824 6.01 4.25824C6.67 4.07824 7.37 3.98824 8.07 3.98824C8.77 3.98824 9.47 4.07824 10.13 4.25824C11.55 3.38824 12.24 3.59824 12.24 3.59824C12.68 4.74824 12.4 5.62824 12.32 5.81824C12.85 6.39824 13.17 7.11824 13.17 7.99824C13.17 10.9682 11.27 11.6682 9.44 11.8582C9.72 12.0882 9.97 12.5582 9.97 13.2982C9.97 14.2982 9.96 14.8582 9.96 15.0382C9.96 15.2382 10.11 15.4782 10.52 15.3982C13.71 14.3982 16 11.6382 16 8.19824C16 3.77824 12.42 0.198242 8 0.198242Z"/></svg>
+          GitHub Repo
+        </a>
       </div>
-      <div class="feature-card">
-        <div class="feature-emoji">🌈</div>
-        <div class="feature-title">Color Output</div>
-        Colorful terminal output for easy reading (toggle with <code>--color</code>).
+    </section>
+    <hr class="section-sep" />
+    <section class="install-section">
+      <div class="install-icon">💻</div>
+      <h2>How to Install</h2>
+      <div class="install-cmds">
+        <div class="install-block terminal-block">
+          <span class="terminal-title">Terminal</span>
+          <pre><code><span class="prompt">$</span> wget https://github.com/edrisranjbar/coolping/raw/main/coolping.deb -O coolping.deb
+<span class="prompt">$</span> sudo dpkg -i coolping.deb
+</code></pre>
+          <span class="terminal-sep"></span>
+          <span class="terminal-comment"># Or manual install:</span>
+          <pre><code><span class="prompt">$</span> cp usr/local/bin/coolping /usr/local/bin/</code></pre>
+        </div>
       </div>
-      <div class="feature-card">
-        <div class="feature-emoji">📝</div>
-        <div class="feature-title">Logging</div>
-        All results are saved to <code>~/coolping.log</code> for later review.
-      </div>
-      <div class="feature-card">
-        <div class="feature-emoji">⚙️</div>
-        <div class="feature-title">Customizable</div>
-        Simple CLI with options for emoji, color, and packet count.
-      </div>
-    </div>
-
-    <h2>🚀 Installation</h2>
-    <p><b>Debian/Ubuntu:</b></p>
-    <pre><code>wget https://github.com/edrisranjbar/coolping/raw/main/coolping.deb -O coolping.deb
-sudo dpkg -i coolping.deb</code></pre>
-    <p><b>Manual:</b> Copy the <code>coolping</code> binary from <code>usr/local/bin/</code> to a directory in your <code>$PATH</code>.</p>
-
-    <h2>🛠️ Usage</h2>
-    <pre><code>coolping [OPTIONS] &lt;host&gt;</code></pre>
-    <ul>
-      <li><code>--count N</code>  Number of packets to send (default: 4)</li>
-      <li><code>--color never</code> Disable color output</li>
-      <li><code>--no-emoji</code>  Disable emoji feedback</li>
-      <li><code>--help</code>    Show help message</li>
-    </ul>
-    <p><b>Example:</b></p>
-    <pre><code>coolping --count 10 google.com</code></pre>
-
-    <h2>📄 Logging</h2>
-    <p>All ping results are automatically logged to <code>~/coolping.log</code>. Review your ping history at any time.</p>
-
-    <h2>🤝 Contributing</h2>
-    <p>Contributions are welcome! Please open issues or pull requests on <a href="https://github.com/edrisranjbar/coolping" target="_blank">GitHub</a>.</p>
-
-    <h2>📜 License</h2>
-    <p>This project is licensed under the MIT License.</p>
+    </section>
+    <a class="website-link" href="https://edrisranjbar.ir" target="_blank" rel="noopener">
+      <svg width="1.5em" height="1.5em" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M10 18.333c4.583 0 8.333-3.75 8.333-8.333S14.583 1.667 10 1.667 1.667 5.417 1.667 10s3.75 8.333 8.333 8.333Z" stroke="currentColor" stroke-width="1.5"/><path d="M10 1.667c2.3 2.267 3.45 5.067 3.333 8.333-.117 3.267-1.283 6.067-3.333 8.333M10 1.667C7.7 3.934 6.55 6.734 6.667 10c.117 3.267 1.283 6.067 3.333 8.333M2.5 6.667h15M2.5 13.333h15" stroke="currentColor" stroke-width="1.5"/></svg>
+      Visit my website
+    </a>
   </div>
+  <footer class="footer">
+    <div>Made with <span style="color:#e25555;">♥</span> by Edris Ranjbar</div>
+  </footer>
 </body>
 </html>
