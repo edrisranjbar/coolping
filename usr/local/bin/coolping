@@ -59,8 +59,27 @@ show_help() {
   echo "  --help          Show this help message"
 }
 
+# Target host
+for arg in "$@"; do
+  if [[ "$arg" == *.* && "$arg" != --* ]]; then
+    HOST="$arg"
+    break
+  fi
+done
+
+if [[ -z "$HOST" ]] || [[ "$HOST" == --* ]]; then
+  echo -e "${RED}${WARN} No host provided. Run with --help for usage.${NC}"
+  exit 1
+fi
+
 # Parse arguments
 for arg in "$@"; do
+
+  # if host comes, skip it
+  if [[ "$arg" == "$HOST" ]]; then
+    continue
+  fi
+
   case $arg in
     --help|-h)
       show_help
@@ -99,13 +118,6 @@ for arg in "$@"; do
       ;;
   esac
 done
-
-# Target host
-HOST="$1"
-if [[ -z "$HOST" ]] || [[ "$HOST" == --* ]]; then
-  echo -e "${RED}${WARN} No host provided. Run with --help for usage.${NC}"
-  exit 1
-fi
 
 # Run ping and print results line-by-line
 echo -e "${YELLOW}${INFO} Pinging $HOST with $PING_COUNT packets...${NC}"
