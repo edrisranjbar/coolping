@@ -1,15 +1,31 @@
 # 🛰️ CoolPing
 
-CoolPing is a stylish, user-friendly alternative to the classic `ping` command. It provides emoji-based feedback, colorized output, and convenient logging, making network diagnostics more fun and informative.
+CoolPing is a stylish, user-friendly alternative to the classic `ping` command. It provides emoji-based feedback, colorized output, continuous monitoring, speed testing, and convenient logging, making network diagnostics more fun and informative.
 
 ## 📦 Features
 
+### Core Features
 - **Emoji Feedback:** Instantly see success ✅ or failure ❌ for each ping.
-- **Logging:** All results are saved to `~/coolping.log` for later review.
 - **Color Output:** Colorful terminal output for easy reading (can be disabled with `--color never`).
-- **No-Emoji Mode:** Compatible with legacy terminals using `--no-emoji`.
 - **Custom Packet Count:** Specify the number of pings with `--count N`.
-- **Simple CLI:** Easy to use, with helpful command-line options.
+- **Logging:** Optional logging to `~/coolping.log` with `--log` flag.
+- **No-Emoji Mode:** Compatible with legacy terminals using `--no-emoji`.
+
+### 🆕 New Features (v2.0)
+
+- **📊 Continuous Monitoring:** Run indefinitely with live updating statistics dashboard
+  - Real-time packet loss visualization with progress bars
+  - Min/Max/Average/Recent latency tracking
+  - Connection quality rating (★★★★★)
+  - Uptime counter
+  - Press Ctrl+C to stop and see final stats
+
+- **🚀 Speed Test:** Measure your internet connection speed
+  - Download speed test (10MB file)
+  - Upload speed test (2MB file)
+  - Results in Mbps and MB/s
+  - Quality ratings with emojis (🐌 🚶 🏃 🚀)
+  - Automatic fallback to alternative test servers
 
 ## 🚀 Installation
 
@@ -39,16 +55,60 @@ coolping [OPTIONS] <host>
 
 ### Options
 
-- `--count N`   Number of packets to send (default: 4)
-- `--color never` Disable color output
-- `--no-emoji`  Disable emoji feedback
-- `--help`    Show help message
+- `--count N`      Number of packets to send (default: 4)
+- `--continuous`   Run indefinitely with live updating stats
+- `--speedtest`    Run download & upload speed test
+- `--log`          Enable logging to ~/coolping.log
+- `--no-emoji`     Disable emoji feedback
+- `--color never`  Disable color output
+- `--verbose`      Show verbose output
+- `--help`         Show help message
 
-### Example
+### Examples
 
+#### Basic Usage
 ```bash
+# Standard ping (4 packets)
+coolping google.com
+
+# Custom packet count
 coolping --count 10 google.com
+
+# With logging
+coolping --log google.com
 ```
+
+#### Continuous Monitoring
+```bash
+# Monitor with live stats dashboard
+coolping --continuous google.com
+
+# Monitor with logging enabled
+coolping --continuous --log 8.8.8.8
+```
+
+#### Speed Test
+```bash
+# Run speed test
+coolping --speedtest google.com
+
+# Speed test without emojis
+coolping --speedtest --no-emoji google.com
+```
+
+## 📊 Quality Ratings
+
+### Download Speed
+- 🚀 ★★★★★ Excellent: > 100 Mbps
+- 🏃 ★★★★☆ Good: 50-100 Mbps
+- 🚶 ★★★☆☆ Fair: 10-50 Mbps
+- 🐌 ★☆☆☆☆ Slow: < 10 Mbps
+
+### Upload Speed
+- 🚀 ★★★★★ Excellent: > 50 Mbps
+- 🏃 ★★★★☆ Good: 20-50 Mbps
+- 🚶 ★★★☆☆ Fair: 5-20 Mbps
+- 🐌 ★☆☆☆☆ Slow: < 5 Mbps
 
 ## 📖 Manual Page
 
@@ -62,7 +122,7 @@ This provides detailed usage, options, and examples for CoolPing.
 
 ## 📄 Logging
 
-All ping results are automatically logged to `~/coolping.log`. You can review your ping history at any time.
+Enable logging with the `--log` flag. All ping results will be saved to `~/coolping.log`. You can review your ping history at any time.
 
 ## 🤝 Contributing
 

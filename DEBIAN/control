@@ -1,9 +1,10 @@
 Package: coolping
-Version: 1.0.0
+Version: 2.0.0
 Section: utils
 Priority: optional
 Architecture: all
-Depends: bash, coreutils, iputils-ping
+Depends: bash, coreutils, iputils-ping, curl, bc
 Maintainer: Edris Ranjbar <edrisranjbar.dev@gmail.com>
-Description: 🛰️ CoolPing - Stylish terminal ping with emojis, logging, and flags.
- A lightweight, cool terminal ping tool with emoji feedback, logging, and customization.
+Description: 🛰️ CoolPing - Stylish ping with monitoring, speed test, and emojis.
+ A powerful terminal network diagnostic tool with emoji feedback, continuous monitoring,
+ speed testing, and customization. Features live statistics dashboard and internet speed tests.
