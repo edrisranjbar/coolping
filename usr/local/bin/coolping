@@ -52,6 +52,7 @@ show_help() {
   echo ""
   echo "Usage:"
   echo "  coolping <host> [options]"
+  echo "  coolping --speedtest [options]"
   echo ""
   echo "Options:"
   echo "  --count N       Number of packets to send (default: 4)"
@@ -71,9 +72,14 @@ for arg in "$@"; do
   fi
 done
 
+# Allow no host when running --speedtest or --help
 if [[ -z "$HOST" ]] || [[ "$HOST" == --* ]]; then
-  echo -e "${RED}${WARN} No host provided. Run with --help for usage.${NC}"
-  exit 1
+  if [[ "$*" == *"--speedtest"* ]] || [[ "$*" == *" -s"* ]] || [[ "$*" == *"--help"* ]] || [[ "$*" == *" -h"* ]]; then
+    :
+  else
+    echo -e "${RED}${WARN} No host provided. Run with --help for usage.${NC}"
+    exit 1
+  fi
 fi
 
 # Parse arguments
