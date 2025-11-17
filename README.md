@@ -51,6 +51,8 @@ Copy the `coolping` binary from `usr/local/bin/` to a directory in your `$PATH`,
 
 ```bash
 coolping [OPTIONS] <host>
+coolping --speedtest [OPTIONS]
+coolping --help
 ```
 
 ### Options
@@ -89,11 +91,11 @@ coolping --continuous --log 8.8.8.8
 
 #### Speed Test
 ```bash
-# Run speed test
-coolping --speedtest google.com
+# Run speed test (no host required)
+coolping --speedtest
 
 # Speed test without emojis
-coolping --speedtest --no-emoji google.com
+coolping --speedtest --no-emoji
 ```
 
 ## 📊 Quality Ratings

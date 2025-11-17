@@ -4,6 +4,12 @@ coolping \- a stylish, user-friendly alternative to the classic ping command
 .SH SYNOPSIS
 .B coolping
 [\fIOPTIONS\fR] \fIhost\fR
+.br
+.B coolping
+\fB--speedtest\fR [\fIOPTIONS\fR]
+.br
+.B coolping
+\fB--help\fR
 .SH DESCRIPTION
 CoolPing provides emoji-based feedback, colorized output, continuous monitoring, speed testing, and convenient logging, making network diagnostics more fun and informative.
 .SH OPTIONS
@@ -15,7 +21,7 @@ Number of packets to send (default: 4)
 Run indefinitely with live updating statistics dashboard. Shows real-time metrics including packet loss, latency statistics (min/max/avg/recent), connection quality rating, and uptime. Press Ctrl+C to stop.
 .TP
 .B --speedtest, -s
-Run download and upload speed test. Downloads a 10MB test file and uploads a 2MB test file to measure your internet connection speed. Results show speed in Mbps and MB/s with quality ratings.
+Run download and upload speed test. Downloads a 10MB test file and uploads a 2MB test file to measure your internet connection speed. Results show speed in Mbps and MB/s with quality ratings. No host is required when using this option.
 .TP
 .B --log
 Enable logging to ~/coolping.log
@@ -42,8 +48,8 @@ Ping with 10 packets
 .B coolping --continuous google.com
 Monitor continuously with live stats dashboard
 .TP
-.B coolping --speedtest google.com
-Run download and upload speed test
+.B coolping --speedtest
+Run download and upload speed test (no host required)
 .TP
 .B coolping --continuous --log google.com
 Continuous monitoring with logging enabled

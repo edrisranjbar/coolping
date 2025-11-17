@@ -64,6 +64,33 @@ show_help() {
   echo "  --help          Show this help message"
 }
 
+# Check for --help or --speedtest first (before host detection)
+for arg in "$@"; do
+  case "$arg" in
+    --help|-h)
+      show_help
+      exit 0
+      ;;
+    --speedtest|-s)
+      # Will be handled later in argument parsing, but we know host is not required
+      ;;
+  esac
+done
+
+# Check if --speedtest or --help are in arguments (before host detection)
+HAS_SPEEDTEST=false
+HAS_HELP=false
+for arg in "$@"; do
+  case "$arg" in
+    --speedtest|-s)
+      HAS_SPEEDTEST=true
+      ;;
+    --help|-h)
+      HAS_HELP=true
+      ;;
+  esac
+done
+
 # Target host
 for arg in "$@"; do
   if [[ "$arg" == *.* && "$arg" != --* ]]; then
@@ -74,7 +101,7 @@ done
 
 # Allow no host when running --speedtest or --help
 if [[ -z "$HOST" ]] || [[ "$HOST" == --* ]]; then
-  if [[ "$*" == *"--speedtest"* ]] || [[ "$*" == *" -s"* ]] || [[ "$*" == *"--help"* ]] || [[ "$*" == *" -h"* ]]; then
+  if [[ "$HAS_SPEEDTEST" == true ]] || [[ "$HAS_HELP" == true ]]; then
     :
   else
     echo -e "${RED}${WARN} No host provided. Run with --help for usage.${NC}"
