@@ -1,9 +1,9 @@
 Package: coolping
-Version: 1.3
+Version: 1.4
 Section: utils
 Priority: optional
 Architecture: all
-Depends: bash, coreutils, iputils-ping, curl, bc
+Depends: bash, coreutils, iputils-ping, curl, bc, ncurses-bin
 Maintainer: Edris Ranjbar <edrisranjbar.dev@gmail.com>
 Description: 🛰️ CoolPing - Stylish ping with monitoring, speed test, and emojis.
  A powerful terminal network diagnostic tool with emoji feedback, continuous monitoring,

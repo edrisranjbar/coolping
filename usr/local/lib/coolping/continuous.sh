@@ -1,131 +1,9 @@
 #!/bin/bash
 
-# Refactored coolping main script — sources helper libraries and dispatches
-
-script_dir="$(cd "$(dirname "$0")" && pwd)"
-lib_dir="$script_dir/../lib/coolping"
-
-if [[ -f "$lib_dir/helpers.sh" ]]; then
-  # shellcheck source=/dev/null
-  source "$lib_dir/helpers.sh"
-else
-  echo "Missing library: $lib_dir/helpers.sh"
-  exit 1
-fi
-
-if [[ -f "$lib_dir/speedtest.sh" ]]; then
-  # shellcheck source=/dev/null
-  source "$lib_dir/speedtest.sh"
-else
-  echo "Missing library: $lib_dir/speedtest.sh"
-  exit 1
-fi
-
-if [[ -f "$lib_dir/continuous.sh" ]]; then
-  # shellcheck source=/dev/null
-  source "$lib_dir/continuous.sh"
-else
-  echo "Missing library: $lib_dir/continuous.sh"
-  exit 1
-fi
-
-if [[ -f "$lib_dir/ping.sh" ]]; then
-  # shellcheck source=/dev/null
-  source "$lib_dir/ping.sh"
-else
-  echo "Missing library: $lib_dir/ping.sh"
-  exit 1
-fi
-
-# Apply simple environment fallbacks before parsing args
-if [[ "$TERM" == "dumb" ]] || [[ "$1" == "--no-emoji" ]]; then
-  USE_EMOJI=false
-  TICK="[OK]"
-  CROSS="[FAIL]"
-  INFO="[INFO]"
-  WARN="[WARN]"
-fi
-
-if [[ "$*" == *"--color never"* ]]; then
-  USE_COLOR=false
-  RED=''
-  GREEN=''
-  BLUE=''
-  YELLOW=''
-  NC=''
-fi
-
-# Pre-scan for --help or --speedtest so host isn't required
-HAS_SPEEDTEST=false
-HAS_HELP=false
-for arg in "$@"; do
-  case "$arg" in
-    --help|-h) HAS_HELP=true ;;
-    --speedtest|-s) HAS_SPEEDTEST=true ;;
-  esac
-done
-
-# Target host detection (allows domain/ip that is not an option)
-for arg in "$@"; do
-  if [[ "$arg" == *.* && "$arg" != --* ]]; then
-    HOST="$arg"
-    break
-  fi
-done
-
-if [[ -z "$HOST" || "$HOST" == --* ]]; then
-  if [[ "$HAS_SPEEDTEST" == true || "$HAS_HELP" == true ]]; then
-    :
-  else
-    echo -e "${RED}${WARN} No host provided. Run with --help for usage.${NC}"
-    exit 1
-  fi
-fi
-
-# Argument parsing
-while [[ $# -gt 0 ]]; do
-  arg="$1"
-  if [[ "$arg" == "$HOST" ]]; then shift; continue; fi
-  case $arg in
-    --help|-h)
-      show_help; exit 0 ;;
-    --log) LOG_ENABLED=true; shift ;;
-    --no-emoji)
-      USE_EMOJI=false; TICK="[OK]"; CROSS="[FAIL]"; INFO="[INFO]"; WARN="[WARN]"; shift ;;
-    --color)
-      if [[ "$2" == "never" ]]; then USE_COLOR=false; RED=''; GREEN=''; BLUE=''; YELLOW=''; NC=''; fi
-      shift 2 ;;
-    --count)
-      PING_COUNT="$2"; shift 2 ;;
-    --verbose|-v)
-      VERBOSE=true; shift ;;
-    --continuous|-c)
-      CONTINUOUS=true; shift ;;
-    --speedtest|-s)
-      SPEEDTEST=true; shift ;;
-    *) shift ;;
-  esac
-done
-
-# Dispatch
-if [[ "$SPEEDTEST" == true ]]; then
-  run_speedtest
-  exit 0
-fi
-
-if [[ "$CONTINUOUS" == true ]]; then
-  run_continuous
-  exit 0
-fi
-
-run_ping
-
-
-# Run ping and print results line-by-line
-if [[ "$CONTINUOUS" == true ]]; then
+# Continuous monitoring loop for coolping
+run_continuous() {
   echo -e "${YELLOW}${INFO} Continuous monitoring of $HOST (Press Ctrl+C to stop)${NC}\n"
-  
-  # Stats tracking
+
   total_pings=0
   successful_pings=0
   failed_pings=0
@@ -133,28 +11,23 @@ if [[ "$CONTINUOUS" == true ]]; then
   max_rtt=0
   sum_rtt=0
   start_time=$(date +%s)
-  
-  # Array to store last N latencies for recent average
+
   declare -a recent_rtts
   RECENT_WINDOW=10
-  
-  # Trap Ctrl+C for graceful exit
+
   trap 'echo -e "\n\n${YELLOW}${INFO} Monitoring stopped. Final stats above.${NC}"; exit 0' INT
-  
-  # Save cursor position for updating in place
+
   tput sc
-  
+
   while true; do
     ((total_pings++))
-    
+
     if ping_output=$(ping -c 1 -W 1 "$HOST" 2>&1); then
-      # Extract time from successful ping
       rtt=$(echo "$ping_output" | grep -o 'time=[0-9.]*' | cut -d'=' -f2)
-      
+
       if [[ -n "$rtt" ]]; then
         ((successful_pings++))
-        
-        # Update min/max/avg
+
         if (( $(echo "$rtt < $min_rtt" | bc -l) )); then
           min_rtt=$rtt
         fi
@@ -162,13 +35,12 @@ if [[ "$CONTINUOUS" == true ]]; then
           max_rtt=$rtt
         fi
         sum_rtt=$(echo "$sum_rtt + $rtt" | bc -l)
-        
-        # Store in recent array
+
         recent_rtts+=("$rtt")
         if [[ ${#recent_rtts[@]} -gt $RECENT_WINDOW ]]; then
           recent_rtts=("${recent_rtts[@]:1}")
         fi
-        
+
         status="${GREEN}${TICK} UP${NC}"
         last_rtt="${GREEN}${rtt}ms${NC}"
       fi
@@ -177,12 +49,10 @@ if [[ "$CONTINUOUS" == true ]]; then
       status="${RED}${CROSS} DOWN${NC}"
       last_rtt="${RED}timeout${NC}"
     fi
-    
-    # Calculate stats
+
     if [[ $successful_pings -gt 0 ]]; then
       avg_rtt=$(printf "%.2f" $(echo "scale=2; $sum_rtt / $successful_pings" | bc -l))
-      
-      # Calculate recent average
+
       recent_sum=0
       for r in "${recent_rtts[@]}"; do
         recent_sum=$(echo "$recent_sum + $r" | bc -l)
@@ -198,26 +68,22 @@ if [[ "$CONTINUOUS" == true ]]; then
       min_rtt_display="N/A"
       max_rtt_display="N/A"
     fi
-    
-    # Set display values for min/max
+
     if [[ $successful_pings -gt 0 ]]; then
       min_rtt_display="${min_rtt}ms"
       max_rtt_display="${max_rtt}ms"
     fi
-    
-    # Calculate packet loss percentage
+
     if [[ $total_pings -gt 0 ]]; then
       loss_percent=$(echo "scale=1; ($failed_pings * 100) / $total_pings" | bc -l)
     else
       loss_percent="0.0"
     fi
-    
-    # Calculate uptime
+
     current_time=$(date +%s)
     uptime_seconds=$((current_time - start_time))
     uptime_formatted=$(printf '%02d:%02d:%02d' $((uptime_seconds/3600)) $((uptime_seconds%3600/60)) $((uptime_seconds%60)))
-    
-    # Determine connection quality
+
     quality="N/A"
     if [[ $successful_pings -gt 0 ]]; then
       if (( $(echo "$loss_percent < 1 && $avg_rtt < 50" | bc -l) )); then
@@ -232,20 +98,17 @@ if [[ "$CONTINUOUS" == true ]]; then
         quality="${RED}Bad ★☆☆☆☆${NC}"
       fi
     fi
-    
-    # Generate packet loss bar
+
     loss_bar=""
-    loss_blocks=$((${loss_percent%.*} / 5))  # 20 blocks max (5% per block)
+    loss_blocks=$((${loss_percent%.*} / 5))
     if [[ $loss_blocks -gt 20 ]]; then loss_blocks=20; fi
     success_blocks=$((20 - loss_blocks))
     for ((i=0; i<success_blocks; i++)); do loss_bar+="${GREEN}█${NC}"; done
     for ((i=0; i<loss_blocks; i++)); do loss_bar+="${RED}█${NC}"; done
-    
-    # Clear previous output and restore cursor
+
     tput rc
     tput ed
-    
-    # Print updated stats
+
     echo -e "╭─────────────────────────────────────────────────────────────╮"
     echo -e "│  ${BLUE}🌐 Host:${NC} $HOST                                          "
     echo -e "│  ${BLUE}Status:${NC} $status    ${BLUE}Last RTT:${NC} $last_rtt                     "
@@ -267,69 +130,7 @@ if [[ "$CONTINUOUS" == true ]]; then
     echo -e "│  ${YELLOW}🏆 Quality:${NC} $quality                                "
     echo -e "│  ${YELLOW}⏱️  Uptime:${NC}  $uptime_formatted                                    "
     echo -e "╰─────────────────────────────────────────────────────────────╯"
-    
+
     sleep 1
   done
-
-else
-  # Original non-continuous mode
-  echo -e "${YELLOW}${INFO} Pinging $HOST with $PING_COUNT packets...${NC}"
-  
-  success_count=0
-  
-  for ((i=1; i<=PING_COUNT; i++)); do
-    # Send a single ping with a 1-second timeout
-    if ping_output=$(ping -c 1 -W 1 "$HOST" 2>&1); then
-      if [[ "$VERBOSE" == true ]]; then
-        echo "$ping_output"
-      fi
-      # Extract time from successful ping
-      rtt=$(echo "$ping_output" | grep -o 'time=[0-9.]*' | cut -d'=' -f2)
-      echo -e "${GREEN}${TICK} Reply from $HOST: seq=$i time=${rtt} ms${NC}"
-      ((success_count++))
-    else
-      if [[ "$VERBOSE" == true ]]; then
-        echo "$ping_output"
-      fi
-      echo -e "${RED}${CROSS} No reply from $HOST: seq=$i timeout${NC}"
-    fi
-    # Optional: sleep for a short duration
-    sleep 0.2
-  done
-  
-  # Show final summary and helpful tips if all pings failed
-  # Only show one fun message (success, failure, or easter egg) after all packets
-  if [[ $success_count -eq 0 ]]; then
-    egg="$(maybe_easter_egg)"
-    if [[ -n "$egg" ]]; then
-      echo -e "\n${RED}$egg${NC}\n"
-    else
-      echo -e "\n${RED}$(random_fail_quote)${NC}\n"
-    fi
-    echo -e "${YELLOW}🛠️  How to fix this mess?${NC}"
-    echo "  1. Check your Wi-Fi or network cable."
-    echo "  2. Restart your router (the classic 'turn it off and on again')."
-    echo "  3. Verify your DNS settings (try 8.8.8.8 or 1.1.1.1)."
-    echo "  4. Use 'traceroute $HOST' or 'mtr $HOST' to see where the connection drops."
-    echo
-  elif [[ $success_count -eq $PING_COUNT ]]; then
-    egg="$(maybe_easter_egg)"
-    if [[ -n "$egg" ]]; then
-      echo -e "\n${GREEN}$egg${NC}\n"
-    else
-      echo -e "\n${GREEN}$(random_success_quote)${NC}\n"
-    fi
-  fi
-  
-  # Log if needed
-  if [[ "$LOG_ENABLED" = true ]]; then
-    log_status="partially successful"
-    if [[ $success_count -eq $PING_COUNT ]]; then
-      log_status="successful"
-    elif [[ $success_count -eq 0 ]]; then
-      log_status="failed"
-    fi
-    echo "$(date '+%Y-%m-%d %H:%M:%S') - coolping $HOST --count $PING_COUNT - ${log_status}" >> ~/coolping.log
-    echo -e "${BLUE}${INFO} Logged to ~/coolping.log${NC}"
-  fi
-fi
+}
