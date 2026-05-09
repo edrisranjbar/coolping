@@ -1,6 +1,6 @@
 # 🛰️ CoolPing
 
-CoolPing is a stylish, user-friendly alternative to the classic `ping` command. It provides emoji-based feedback, colorized output, continuous monitoring, speed testing, and convenient logging, making network diagnostics more fun and informative.
+CoolPing is a stylish, user-friendly alternative to the classic `ping` command. It provides emoji-based feedback, colorized output, continuous monitoring, and convenient logging, making network diagnostics more fun and informative.
 
 ## 📦 Features
 
@@ -19,13 +19,6 @@ CoolPing is a stylish, user-friendly alternative to the classic `ping` command. 
   - Connection quality rating (★★★★★)
   - Uptime counter
   - Press Ctrl+C to stop and see final stats
-
-- **🚀 Speed Test:** Measure your internet connection speed
-  - Download speed test (10MB file)
-  - Upload speed test (2MB file)
-  - Results in Mbps and MB/s
-  - Quality ratings with emojis (🐌 🚶 🏃 🚀)
-  - Automatic fallback to alternative test servers
 
 ## 🚀 Installation
 
@@ -51,7 +44,6 @@ Copy the `coolping` binary from `usr/local/bin/` to a directory in your `$PATH`,
 
 ```bash
 coolping [OPTIONS] <host>
-coolping --speedtest [OPTIONS]
 coolping --help
 ```
 
@@ -59,7 +51,6 @@ coolping --help
 
 - `--count N`      Number of packets to send (default: 4)
 - `--continuous`   Run indefinitely with live updating stats
-- `--speedtest`    Run download & upload speed test
 - `--log`          Enable logging to ~/coolping.log
 - `--no-emoji`     Disable emoji feedback
 - `--color never`  Disable color output
@@ -88,29 +79,6 @@ coolping --continuous google.com
 # Monitor with logging enabled
 coolping --continuous --log 8.8.8.8
 ```
-
-#### Speed Test
-```bash
-# Run speed test (no host required)
-coolping --speedtest
-
-# Speed test without emojis
-coolping --speedtest --no-emoji
-```
-
-## 📊 Quality Ratings
-
-### Download Speed
-- 🚀 ★★★★★ Excellent: > 100 Mbps
-- 🏃 ★★★★☆ Good: 50-100 Mbps
-- 🚶 ★★★☆☆ Fair: 10-50 Mbps
-- 🐌 ★☆☆☆☆ Slow: < 10 Mbps
-
-### Upload Speed
-- 🚀 ★★★★★ Excellent: > 50 Mbps
-- 🏃 ★★★★☆ Good: 20-50 Mbps
-- 🚶 ★★★☆☆ Fair: 5-20 Mbps
-- 🐌 ★☆☆☆☆ Slow: < 5 Mbps
 
 ## 📖 Manual Page
 

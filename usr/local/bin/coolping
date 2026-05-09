@@ -13,14 +13,6 @@ else
   exit 1
 fi
 
-if [[ -f "$lib_dir/speedtest.sh" ]]; then
-  # shellcheck source=/dev/null
-  source "$lib_dir/speedtest.sh"
-else
-  echo "Missing library: $lib_dir/speedtest.sh"
-  exit 1
-fi
-
 if [[ -f "$lib_dir/continuous.sh" ]]; then
   # shellcheck source=/dev/null
   source "$lib_dir/continuous.sh"
@@ -55,13 +47,11 @@ if [[ "$*" == *"--color never"* ]]; then
   NC=''
 fi
 
-# Pre-scan for --help or --speedtest so host isn't required
-HAS_SPEEDTEST=false
+# Pre-scan for --help so host isn't required
 HAS_HELP=false
 for arg in "$@"; do
   case "$arg" in
     --help|-h) HAS_HELP=true ;;
-    --speedtest|-s) HAS_SPEEDTEST=true ;;
   esac
 done
 
@@ -74,7 +64,7 @@ for arg in "$@"; do
 done
 
 if [[ -z "$HOST" || "$HOST" == --* ]]; then
-  if [[ "$HAS_SPEEDTEST" == true || "$HAS_HELP" == true ]]; then
+  if [[ "$HAS_HELP" == true ]]; then
     :
   else
     echo -e "${RED}${WARN} No host provided. Run with --help for usage.${NC}"
@@ -101,17 +91,9 @@ while [[ $# -gt 0 ]]; do
       VERBOSE=true; shift ;;
     --continuous|-c)
       CONTINUOUS=true; shift ;;
-    --speedtest|-s)
-      SPEEDTEST=true; shift ;;
     *) shift ;;
   esac
 done
-
-# Dispatch
-if [[ "$SPEEDTEST" == true ]]; then
-  run_speedtest
-  exit 0
-fi
 
 if [[ "$CONTINUOUS" == true ]]; then
   run_continuous

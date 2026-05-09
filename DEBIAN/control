@@ -5,6 +5,5 @@ Priority: optional
 Architecture: all
 Depends: bash, coreutils, iputils-ping, curl, bc, ncurses-bin
 Maintainer: Edris Ranjbar <edrisranjbar.dev@gmail.com>
-Description: 🛰️ CoolPing - Stylish ping with monitoring, speed test, and emojis.
- A powerful terminal network diagnostic tool with emoji feedback, continuous monitoring,
- speed testing, and customization. Features live statistics dashboard and internet speed tests.
+Description: 🛰️ CoolPing - Stylish ping with monitoring, and emojis.
+ A powerful terminal network diagnostic tool with emoji feedback, continuous monitoring and customization.

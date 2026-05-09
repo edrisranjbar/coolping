@@ -9,7 +9,6 @@ USE_EMOJI=true
 USE_COLOR=true
 VERBOSE=false
 CONTINUOUS=false
-SPEEDTEST=false
 
 # Emoji-safe fallback
 TICK="✅"
@@ -29,12 +28,10 @@ show_help() {
   echo ""
   echo "Usage:"
   echo "  coolping <host> [options]"
-  echo "  coolping --speedtest [options]"
   echo ""
   echo "Options:"
   echo "  --count N       Number of packets to send (default: 4)"
   echo "  --continuous    Run indefinitely with live updating stats"
-  echo "  --speedtest     Run download & upload speed test"
   echo "  --log           Enable logging to ~/coolping.log"
   echo "  --no-emoji      Disable emojis"
   echo "  --color never   Disable colored output"
