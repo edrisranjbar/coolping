@@ -29,6 +29,27 @@ else
   exit 1
 fi
 
+show_header() {
+  echo
+
+  if command -v figlet >/dev/null 2>&1; then
+    if command -v lolcat >/dev/null 2>&1; then
+      figlet -f ANSI\ Shadow "CoolPing" | lolcat
+    else
+      figlet -f ANSI\ Shadow "CoolPing"
+    fi
+  else
+    echo -e "\033[38;5;39m ██████╗ ██████╗  ██████╗ ██╗\033[38;5;82m██████╗ ██╗███╗   ██╗\033[38;5;214m ██████╗"
+    echo -e "\033[38;5;39m██╔════╝██╔═══██╗██╔═══██╗██║\033[38;5;82m██╔══██╗██║████╗  ██║\033[38;5;214m██╔════╝"
+    echo -e "\033[38;5;39m██║     ██║   ██║██║   ██║██║\033[38;5;82m██████╔╝██║██╔██╗ ██║\033[38;5;214m██║  ███╗"
+    echo -e "\033[38;5;39m██║     ██║   ██║██║   ██║██║\033[38;5;82m██╔═══╝ ██║██║╚██╗██║\033[38;5;214m██║   ██║"
+    echo -e "\033[38;5;39m╚██████╗╚██████╔╝╚██████╔╝██║\033[38;5;82m██║     ██║██║ ╚████║\033[38;5;214m╚██████╔╝"
+    echo -e "\033[38;5;39m ╚═════╝ ╚═════╝  ╚═════╝ ╚═╝\033[38;5;82m╚═╝     ╚═╝╚═╝  ╚═══╝\033[38;5;214m ╚═════╝\033[0m"
+  fi
+
+  echo
+}
+
 # Apply simple environment fallbacks before parsing args
 if [[ "$TERM" == "dumb" ]] || [[ "$1" == "--no-emoji" ]]; then
   USE_EMOJI=false
@@ -94,6 +115,8 @@ while [[ $# -gt 0 ]]; do
     *) shift ;;
   esac
 done
+
+show_header
 
 if [[ "$CONTINUOUS" == true ]]; then
   run_continuous
