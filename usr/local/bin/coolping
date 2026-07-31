@@ -124,6 +124,7 @@ if [[ "$CONTINUOUS" == true ]]; then
 fi
 
 run_ping
+exit 0
 
 
 # Run ping and print results line-by-line
