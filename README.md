@@ -2,6 +2,8 @@
 
 CoolPing is a stylish, user-friendly alternative to the classic `ping` command. It provides emoji-based feedback, colorized output, continuous monitoring, and convenient logging, making network diagnostics more fun and informative.
 
+![CoolPing demo](docs/demo.gif)
+
 ## 📦 Core Features
 
 - **Emoji Feedback:** Instantly see success ✅ or failure ❌ for each ping.
