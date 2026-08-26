@@ -1,4 +1,4 @@
-.TH COOLPING 1 "July 2026" "CoolPing 1.6" "User Commands"
+.TH COOLPING 1 "August 2026" "CoolPing 1.7" "User Commands"
 .SH NAME
 coolping \- a stylish, user-friendly alternative to the classic ping command
 .SH SYNOPSIS
@@ -11,47 +11,55 @@ coolping \- a stylish, user-friendly alternative to the classic ping command
 CoolPing provides emoji-based feedback, colorized output, continuous monitoring, and convenient logging, making network diagnostics more fun and informative.
 .SH OPTIONS
 .TP
-.B --count N
-Number of packets to send (default: 4)
+.B \-\-count N
+Number of packets to send (default: 4). N must be a positive integer.
 .TP
-.B --continuous, -c
-Run indefinitely with live updating statistics dashboard. Shows real-time metrics including packet loss, latency statistics (min/max/avg/recent), connection quality rating, and uptime. Press Ctrl+C to stop.
+.B \-\-continuous, \-c
+Run indefinitely with a live updating statistics dashboard. Shows real-time metrics including packet loss with a visual bar, an RTT sparkline, latency statistics (current/average/recent/min/max), jitter, connection quality rating, and uptime. Press Ctrl+C to stop.
 .TP
-.B --log
-Enable logging to ~/coolping.log
+.B \-\-log
+Enable logging to ~/coolping.log. In continuous mode, state changes and a periodic heartbeat are logged.
 .TP
-.B --no-emoji
-Disable emojis for compatibility with legacy terminals
+.B \-\-no-emoji
+Disable emojis for compatibility with legacy terminals.
 .TP
-.B --color never
-Disable colored output
+.B \-\-color WHEN
+Colorize output: never, always, or auto (default). Colors are also disabled automatically when output is not a terminal or when the NO_COLOR environment variable is set.
 .TP
-.B --verbose, -v
-Show verbose output including raw ping details
+.B \-\-verbose, \-v
+Show verbose output including raw ping details.
 .TP
-.B --help, -h
-Show help message
+.B \-\-help, \-h
+Show help message.
 .SH EXAMPLES
 .TP
 .B coolping google.com
 Basic ping with 4 packets
 .TP
-.B coolping --count 10 google.com
+.B coolping localhost
+Ping a host without a dot in its name
+.TP
+.B coolping \-\-count=10 google.com
 Ping with 10 packets
 .TP
-.B coolping --continuous google.com
+.B coolping \-\-continuous google.com
 Monitor continuously with live stats dashboard
 .TP
-.B coolping --continuous --log google.com
+.B coolping \-\-continuous \-\-log 8.8.8.8
 Continuous monitoring with logging enabled
 .SH FEATURES
 .TP
 .B Continuous Monitoring
-Real-time dashboard showing total pings, success/failure counts, packet loss percentage with visual graph, latency statistics (current, average, recent average, min, max), connection quality rating (1-5 stars), and uptime counter.
+Real-time dashboard showing total pings, success/failure counts, packet loss percentage with a 20-block graph, a sparkline of recent latencies, latency statistics (current, average, recent average, jitter, min, max), connection quality rating (1-5 stars), and an uptime counter.
 .TP
 .B Quality Ratings
-Download: Excellent (>100 Mbps), Good (50-100 Mbps), Fair (10-50 Mbps), Slow (<10 Mbps)
-Upload: Excellent (>50 Mbps), Good (20-50 Mbps), Fair (5-20 Mbps), Slow (<5 Mbps)
+Excellent (<1% loss, <50ms avg), Good (<5% loss, <100ms avg), Fair (<10% loss, <200ms avg), Poor (<25% loss), Bad (everything else).
+.SH ENVIRONMENT
+.TP
+.B NO_COLOR
+Disables color output when set.
+.SH EXIT STATUS
+0 on success, 1 on usage errors or when no host is provided.
 .SH AUTHOR
 Edris Ranjbar
 .SH SEE ALSO

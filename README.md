@@ -5,9 +5,11 @@ CoolPing is a stylish, user-friendly alternative to the classic `ping` command. 
 ## 📦 Core Features
 
 - **Emoji Feedback:** Instantly see success ✅ or failure ❌ for each ping.
-- **Color Output:** Colorful terminal output for easy reading (can be disabled with `--color never`).
+- **Color Output:** Colorful terminal output for easy reading (auto-disabled on non-TTY, with `--color never`, or when `NO_COLOR` is set).
 - **Custom Packet Count:** Specify the number of pings with `--count N`.
-- **Logging:** Optional logging to `~/coolping.log` with `--log` flag.
+- **RTT Color Coding:** Latencies are colored green (<50ms), yellow (<150ms), or red.
+- **Continuous Monitoring:** Live dashboard with loss graph, RTT sparkline, jitter, quality rating, and uptime.
+- **Logging:** Optional logging to `~/coolping.log` with `--log` (works in both modes).
 - **No-Emoji Mode:** Compatible with legacy terminals using `--no-emoji`.
 
 ## 🚀 Installation
@@ -15,20 +17,20 @@ CoolPing is a stylish, user-friendly alternative to the classic `ping` command. 
 ### Debian/Ubuntu
 
 ```bash
-# The .deb file is already included in this directory—no build needed!
-sudo dpkg -i coolping.deb
+# The .deb file is included in this repository—no build needed!
+sudo dpkg -i coolping_1.7_all.deb
 ```
 
 #### Or install directly from GitHub (no git required)
 
 ```bash
-wget https://github.com/edrisranjbar/coolping/raw/main/coolping.deb -O coolping.deb
+wget https://github.com/edrisranjbar/coolping/raw/main/coolping_1.7_all.deb -O coolping.deb
 sudo dpkg -i coolping.deb
 ```
 
 ### Manual Install
 
-Copy the `coolping` binary from `usr/local/bin/` to a directory in your `$PATH`, such as `/usr/local/bin`.
+Copy the contents of `usr/` to the same paths on your system (`usr/local/bin/coolping` and `usr/local/lib/coolping/`).
 
 ## 🛠️ Usage
 
@@ -39,13 +41,15 @@ coolping --help
 
 ### Options
 
-- `--count N`      Number of packets to send (default: 4)
-- `--continuous`   Run indefinitely with live updating stats
-- `--log`          Enable logging to ~/coolping.log
-- `--no-emoji`     Disable emoji feedback
-- `--color never`  Disable color output
-- `--verbose`      Show verbose output
-- `--help`         Show help message
+- `--count N`        Number of packets to send (default: 4)
+- `-c`, `--continuous` Run indefinitely with a live updating dashboard
+- `--log`            Enable logging to ~/coolping.log
+- `--no-emoji`       Disable emoji feedback
+- `--color WHEN`     never, always, or auto (default)
+- `-v`, `--verbose`  Show verbose output
+- `-h`, `--help`     Show help message
+
+Options also accept `=` syntax, e.g. `--count=10 --color=never`.
 
 ### Examples
 
@@ -70,6 +74,8 @@ coolping --continuous google.com
 coolping --continuous --log 8.8.8.8
 ```
 
+The continuous dashboard shows total/success/fail counts, packet loss with a visual bar, a sparkline of recent latencies, latency stats (current, average, recent, jitter, min, max), a connection quality rating (★), and uptime.
+
 ## 📖 Manual Page
 
 After installation, you can view the full manual with:
@@ -82,7 +88,7 @@ This provides detailed usage, options, and examples for CoolPing.
 
 ## 📄 Logging
 
-Enable logging with the `--log` flag. All ping results will be saved to `~/coolping.log`. You can review your ping history at any time.
+Enable logging with the `--log` flag. Single-shot runs log their summary to `~/coolping.log`; continuous mode logs state changes plus a heartbeat every 30 pings. You can review your ping history at any time.
 
 ## 🤝 Contributing
 
@@ -91,3 +97,9 @@ Contributions are welcome! Please open issues or pull requests on GitHub.
 ## 📜 License
 
 This project is licensed under the MIT License. See [LICENSE](LICENSE) for details.
+
+## 🔨 Building the .deb (from the repo root)
+
+```bash
+dpkg-deb --build . coolping_1.7_all.deb
+```
