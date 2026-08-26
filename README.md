@@ -19,14 +19,14 @@ CoolPing is a stylish, user-friendly alternative to the classic `ping` command. 
 ### Debian/Ubuntu
 
 ```bash
-# The .deb file is included in this repository—no build needed!
-sudo dpkg -i coolping_1.7_all.deb
+# coolping.deb always points to the latest release
+sudo dpkg -i coolping.deb
 ```
 
 #### Or install directly from GitHub (no git required)
 
 ```bash
-wget https://github.com/edrisranjbar/coolping/raw/main/coolping_1.7_all.deb -O coolping.deb
+wget https://github.com/edrisranjbar/coolping/raw/main/coolping.deb -O coolping.deb
 sudo dpkg -i coolping.deb
 ```
 
@@ -103,5 +103,6 @@ This project is licensed under the MIT License. See [LICENSE](LICENSE) for detai
 ## 🔨 Building the .deb (from the repo root)
 
 ```bash
-dpkg-deb --build . coolping_1.7_all.deb
+dpkg-deb --build . coolping_<version>_all.deb
+cp coolping_<version>_all.deb coolping.deb   # stable name, always latest
 ```
